@@ -32,14 +32,9 @@ class LoginPage extends StatelessWidget {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
-                  child: Text(
-                    "GENZ",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/genz_logo.jpg'
                   ),
                 ),
               ),
@@ -51,8 +46,8 @@ class LoginPage extends StatelessWidget {
                 "ចូលគណនី",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
 

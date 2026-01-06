@@ -29,27 +29,22 @@ class RegisterPage extends StatelessWidget {
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
-                  child: Text(
-                    "GENZ",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/genz_logo.jpg'
                   ),
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               // 🇰🇭 Title
               const Text(
                 "បង្កើតគណនី",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
 
@@ -134,12 +129,17 @@ class RegisterPage extends StatelessWidget {
                       children: const [
                         CircleAvatar(
                           backgroundColor: Colors.white,
-                          child: Icon(Icons.facebook, color: Colors.blue),
+                          child: Icon(Icons.facebook, 
+                          color: Colors.blue,
+                          size: 37
+                          ),
                         ),
                         SizedBox(width: 16),
                         CircleAvatar(
                           backgroundColor: Colors.white,
-                          child: Icon(Icons.g_mobiledata, color: Colors.red),
+                          child: Icon(Icons.g_mobiledata, 
+                          color: Color.fromARGB(255, 26, 9, 255),
+                          size: 37),
                         ),
                         SizedBox(width: 16),
                         CircleAvatar(
