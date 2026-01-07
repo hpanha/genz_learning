@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -12,10 +13,7 @@ class LoginPage extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF001B5E),
-                Color(0xFF0033A0),
-              ],
+              colors: [Color(0xFF001B5E), Color(0xFF0033A0)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -33,9 +31,7 @@ class LoginPage extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/genz_logo.jpg'
-                  ),
+                  child: Image.asset('assets/images/genz_logo.jpg'),
                 ),
               ),
 
@@ -66,10 +62,7 @@ class LoginPage extends StatelessWidget {
                     // ☑️ Remember me
                     Row(
                       children: [
-                        Checkbox(
-                          value: true,
-                          onChanged: (value) {},
-                        ),
+                        Checkbox(value: true, onChanged: (value) {}),
                         const Text(
                           "Remember me",
                           style: TextStyle(color: Colors.white),
@@ -83,7 +76,14 @@ class LoginPage extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                            Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
                           shape: RoundedRectangleBorder(
@@ -117,13 +117,13 @@ class LoginPage extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ),
-                          );
-                        },
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
+                            );
+                          },
                           child: const Text(
                             "Sign up",
                             style: TextStyle(color: Colors.white70),
@@ -153,8 +153,11 @@ class LoginPage extends StatelessWidget {
   }
 
   // 🔹 Reusable input
-  static Widget inputField(String hint, IconData icon,
-      {bool isPassword = false}) {
+  static Widget inputField(
+    String hint,
+    IconData icon, {
+    bool isPassword = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextField(
@@ -173,4 +176,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-  
