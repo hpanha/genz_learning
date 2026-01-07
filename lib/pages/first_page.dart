@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
+import 'package:marquee/marquee.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const FirstPage());
@@ -23,17 +25,18 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
         children: [
-          // Blue background
+          // 🔵 Fullscreen background image
           SizedBox.expand(
-            child: Image.asset('assets/images/binaryBG.png', fit: BoxFit.fill),
+            child: Image.asset('assets/images/binaryBG.png', fit: BoxFit.cover),
           ),
 
-          // White curved bottom section
+          // ⚪ White curved bottom section
           Align(
             alignment: Alignment.bottomCenter,
             child: ClipPath(
@@ -45,9 +48,9 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Logo circle
+          // 🌟 Logo circle
           Positioned(
-            top: screenHeight * 0.3,
+            top: screenHeight * 0.25,
             child: Container(
               width: 160,
               height: 160,
@@ -64,60 +67,92 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Text and button
+          // 🏃 Scrolling marquee text
           Positioned(
-            bottom: screenHeight * 0.22,
-            child: Column(
-              children: [
-                const Text(
-                  'សូមស្វាគមន៍មកកាន់',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple,
-                  ),
+            top: screenHeight * 0.65,
+            left: 0,
+            right: 0,
+            child: SizedBox(
+              height: 50,
+              child: Marquee(
+                text: "សូមស្វាគមន៍មកកាន់ Genz Coder",
+                style: GoogleFonts.moul(
+                  fontSize: 25,
+                  color: const Color.fromARGB(255, 114, 17, 131),
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'ជេនហ្សី កូដដឺ',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the next page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RegisterPage(),
-                      ), // replace with your page
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[900],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 12,
-                    ),
-                  ),
+                scrollAxis: Axis.horizontal,
+                blankSpace: 20,
+                velocity: 50,
+                pauseAfterRound: const Duration(seconds: 1),
+                startPadding: 10,
+                accelerationDuration: const Duration(seconds: 1),
+                accelerationCurve: Curves.linear,
+                decelerationDuration: const Duration(seconds: 1),
+                decelerationCurve: Curves.easeOut,
+              ),
+            ),
+          ),
 
-                  child: const Text(
-                    'Start Now',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+          // 🎯 Start Now button
+          Positioned(
+            bottom: screenHeight * 0.15,
+            child: SizedBox(
+              width: screenWidth * 0.6,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterPage(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 5, 38, 87),
+                        Color(0xFF1976D2),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Text(
+                      "Start Now",
+                      style: GoogleFonts.moul(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ],
+              ),
+            ),
+          ),
+
+          // ⚪ Bottom copyright
+          Positioned(
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Text(
+              "© Copyright 2025",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.blueAccent),
             ),
           ),
         ],
@@ -131,13 +166,13 @@ class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.lineTo(0, 60); // start 60 px down from top-left
+    path.lineTo(0, 60);
     path.quadraticBezierTo(
       size.width / 2,
       180,
       size.width,
       60,
-    ); // smooth top curve
+    );
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
