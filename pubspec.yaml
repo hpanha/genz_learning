@@ -65,6 +65,14 @@ flutter:
       - assets/images/genz_logo.jpg
       - assets/images/binaryBG.png
       - assets/images/courseContainer.png
+      - assets/images/profile/phorn.jpg
+      - assets/images/profile/panha.jpg
+      - assets/images/profile/makara.jpg
+      - assets/images/profile/long.jpg
+      - assets/images/profile/sreypich.jpg
+      - assets/images/courseLogo/
+      - assets/images/coursesImg/
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

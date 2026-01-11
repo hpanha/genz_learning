@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'profile_page.dart';
+
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      bottomNavigationBar: _bottomNav(),
+      bottomNavigationBar: _bottomNav(context),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -41,7 +43,7 @@ class HomePage extends StatelessWidget {
         children: [
           const CircleAvatar(
             radius: 22,
-            backgroundImage: AssetImage('assets/profile.jpg'),
+            backgroundImage: AssetImage('assets/images/profile/phorn.jpg'),
           ),
           const SizedBox(width: 12),
           const Column(
@@ -82,7 +84,7 @@ class HomePage extends StatelessWidget {
             // ✅ SHADOW
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(),
                 blurRadius: 15,
                 offset: const Offset(0, 4),
               ),
@@ -140,119 +142,198 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  final List<String> instructorImages = [
+  'assets/images/profile/panha.jpg',
+  'assets/images/profile/phorn.jpg',
+  'assets/images/profile/sreypich.jpg',
+  'assets/images/profile/long.jpg',
+  'assets/images/profile/makara.jpg',
+];
+
   // INSTRUCTORS
   Widget _instructorSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Instructor',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 70,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (_, _) {
-                return const Padding(
-                  padding: EdgeInsets.only(right: 12),
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/instructor.jpg'),
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Instructor',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+
+        SizedBox(
+          height: 70,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: instructorImages.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
+                padding: const EdgeInsets.all(3), // border thickness
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.purple,
+                    width: 2,
                   ),
-                );
-              },
-            ),
+                ),
+                child: CircleAvatar(
+                  radius: 28,
+                  backgroundImage: AssetImage(instructorImages[index]),
+                ),
+              );
+            },
           ),
-                  const Text(
-            'What on you mind?',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
 
-  // TECH ICONS
-  Widget _techIcons() {
-    final icons = [
-      Icons.code,
-      Icons.html,
-      Icons.css,
-      Icons.javascript,
-      Icons.flutter_dash,
-    ];
+        const SizedBox(height: 16),
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0),
+        const Text(
+          'What on your mind?',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ],
+    ),
+  );
+}
+
+
+Widget _techIcons() {
+  final List<String> techImages = [
+    'assets/images/courseLogo/cpp.png',
+    'assets/images/courseLogo/css.png',
+    'assets/images/courseLogo/html.png',
+    'assets/images/courseLogo/js.png',
+    'assets/images/courseLogo/flutter.png',
+    'assets/images/courseLogo/laravel.png',
+    'assets/images/courseLogo/mysql.png',
+    'assets/images/courseLogo/react.png',
+  ];
+
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal, // Enable horizontal scroll
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: icons
-            .map(
-              (icon) => CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(icon, color: Colors.purple),
+        children: techImages.map((image) {
+          return Container(
+            margin: const EdgeInsets.only(right: 12), // space between logos
+            width: 40, // circle size
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(6), // inner padding
+              child: Image.asset(
+                image,
+                fit: BoxFit.contain,
               ),
-            )
-            .toList(),
+            ),
+          );
+        }).toList(),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   // COURSES GRID
   Widget _courseGrid() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        children: [
-          _courseCard('C# Programming', Icons.code),
-          _courseCard('Web Design', Icons.web),
-        ],
-      ),
-    );
-  }
+  return Padding(
+    padding: const EdgeInsets.all(16),
+    child: GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      children: [
+        _courseCard('C# Programming', 'assets/images/coursesImg/cppCourse.png'),
+        _courseCard('Web Design', 'assets/images/coursesImg/html&cssCourse.png'),
+      ],
+    ),
+  );
+}
 
-  Widget _courseCard(String title, IconData icon) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 48, color: Colors.purple),
-          const SizedBox(height: 10),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
+
+  Widget _courseCard(String title, String imagePath) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.blueAccent, // Card background color
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black26,
+          blurRadius: 4,
+          offset: Offset(2, 2),
+        ),
+      ],
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              imagePath, // Example: 'assets/images/csharp.png'
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(108, 0, 0, 0),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+            ),
+          ),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   // BOTTOM NAV
-  Widget _bottomNav() {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.purple,
-      unselectedItemColor: Colors.grey,
-      currentIndex: 0,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.play_circle),
-          label: 'Courses',
-        ),
-        BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+  Widget _bottomNav(BuildContext context) {
+  return BottomNavigationBar(
+    selectedItemColor: Colors.purple,
+    unselectedItemColor: Colors.grey,
+    currentIndex: 0,
+    onTap: (index) {
+      if (index == 3) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfilePage()),
+        );
+      }
+    },
+    items: const [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.play_circle),
+        label: 'Courses',
+      ),
+      BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     );
   }
+
 }
