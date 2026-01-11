@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'register_page.dart';
+import 'home_page.dart';
 
 void main() {
   runApp(const FirstPage());
@@ -93,7 +93,7 @@ class SplashScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RegisterPage(),
+                        builder: (context) => HomePage(),
                       ), // replace with your page
                     );
                   },
