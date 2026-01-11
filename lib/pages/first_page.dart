@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'register_page.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:marquee/marquee.dart';
+
 
 void main() {
   runApp(const FirstPage());
@@ -64,37 +67,38 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Text and button
-          Positioned(
+           Positioned(
             bottom: screenHeight * 0.22,
+            left: 0,
+            right: 0,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'សូមស្វាគមន៍មកកាន់',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple,
+                SizedBox(
+                  height: 50,
+                  child: Marquee(
+                    text: 'សូមស្វាគមន៍មកកាន់ ជេនហ្សី កូដដឺ',
+                    style: GoogleFonts.moul(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                    ),
+                    scrollAxis: Axis.horizontal,
+                    textDirection: TextDirection.ltr,
+                    blankSpace: 50.0,
+                    velocity: 50.0,
+                    pauseAfterRound: const Duration(seconds: 1),
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'ជេនហ្សី កូដដឺ',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
+               
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to the next page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
-                      ), // replace with your page
+                        builder: (context) => RegisterPage(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -107,7 +111,6 @@ class SplashScreen extends StatelessWidget {
                       vertical: 12,
                     ),
                   ),
-
                   child: const Text(
                     'Start Now',
                     style: TextStyle(
