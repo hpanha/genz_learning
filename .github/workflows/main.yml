@@ -21,7 +21,7 @@ jobs:
         if: success()
         run: |
           curl -s -X POST "https://api.telegram.org/bot8269763334:AAE_njZr00P7hVdAtJ6X29bBcByZulksDpY/sendMessage" \
-          -d chat_id="5891944573" \
+          -d chat_id="-1003650825395" \
           -d text="✅ Deployment to Github okay!"
 
       # --- Telegram Notification on Failure ---
@@ -29,5 +29,5 @@ jobs:
         if: failure()
         run: |
           curl -s -X POST "https://api.telegram.org/bot8269763334:AAE_njZr00P7hVdAtJ6X29bBcByZulksDpY/sendMessage" \
-          -d chat_id="5891944573" \
+          -d chat_id="-1003650825395" \
           -d text="❌ Deployment to Github failes"
