@@ -140,7 +140,7 @@ class TopCurveClipper extends CustomClipper<Path> {
       180,
       size.width,
       60,
-    ); // smooth top curve
+    );
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
