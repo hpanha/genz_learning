@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
+import 'message_page.dart';
+import 'media_page.dart';
+import 'notification_page.dart';
+import 'register_page.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -14,7 +18,7 @@ class HomePage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _header(),
+              _header(context),
               _searchBar(),
               _banner(),
               _sectionLabel('សូមស្វាគមន៍មកកាន់ការសិក្សាផ្នែកទំនាក់ទំនង'),
@@ -29,42 +33,65 @@ class HomePage extends StatelessWidget {
   }
 
   // HEADER
-  Widget _header() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(30, 15, 30, 50),
-      decoration: const BoxDecoration(
-        color: Colors.purple,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
+  Widget _header(BuildContext context) {
+  return Container(
+    padding: const EdgeInsets.fromLTRB(30, 15, 30, 50),
+    decoration: const BoxDecoration(
+      color: Colors.purple,
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(24),
+        bottomRight: Radius.circular(24),
       ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 22,
-            backgroundImage: AssetImage('assets/images/profile/phorn.jpg'),
-          ),
-          const SizedBox(width: 12),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Horm Sophorn',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+    ),
+    child: Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => RegisterPage(),
               ),
-              Text('Good morning!', style: TextStyle(color: Colors.white70)),
-            ],
+            );
+          },
+          child: const CircleAvatar(
+            radius: 22,
+            backgroundImage:
+                AssetImage('assets/images/profile/phorn.jpg'),
           ),
-          const Spacer(),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications, color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(width: 12),
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Horm Sophorn',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            Text(
+              'Good morning!',
+              style: TextStyle(color: Colors.white70),
+            ),
+          ],
+        ),
+        const Spacer(),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const NotificationPage(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.notifications, color: Colors.white),
+        ),
+      ],
+    ),
+  );
+}
+
+
 
   // SEARCH BAR
   Widget _searchBar() {
@@ -317,6 +344,18 @@ Widget _techIcons() {
     unselectedItemColor: Colors.grey,
     currentIndex: 0,
     onTap: (index) {
+      if (index == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MediaPage()),
+        );
+      }
+      if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MessagePage()),
+        );
+      }
       if (index == 3) {
         Navigator.push(
           context,

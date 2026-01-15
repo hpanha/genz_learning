@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'message_page.dart';
+import 'media_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -7,22 +9,23 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
+
       appBar: AppBar(
         backgroundColor: Colors.purple,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false, // no back arrow
         title: const Text('My Profile'),
         centerTitle: true,
       ),
+
+      // 🔹 USE THE BOTTOM NAV HERE
+      bottomNavigationBar: _bottomNav(context),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 20),
 
-            // PROFILE IMAGE
             const CircleAvatar(
               radius: 45,
               backgroundImage:
@@ -52,6 +55,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  // ================= INFO CARD =================
   Widget _infoCard() {
     return Container(
       margin: const EdgeInsets.all(16),
@@ -79,8 +83,50 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  // ================= BOTTOM NAV =================
+  Widget _bottomNav(BuildContext context) {
+    return BottomNavigationBar(
+      selectedItemColor: Colors.purple,
+      unselectedItemColor: Colors.grey,
+      currentIndex: 3, // Profile selected
+      onTap: (index) {
+        if (index == 0) {
+          Navigator.pop(context); // back to Home
+        }
+        if (index == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MediaPage()),
+        );
+      }
+      if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MessagePage()),
+        );
+      }
+      if (index == 3) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfilePage()),
+        );
+      }
+      },
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.play_circle),
+          label: 'Courses',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+      ],
+    );
+  }
 }
 
+// ================= INFO ROW =================
 class _InfoRow extends StatelessWidget {
   final String title;
   final String value;
@@ -100,7 +146,4 @@ class _InfoRow extends StatelessWidget {
       ),
     );
   }
-
-
-  
 }
