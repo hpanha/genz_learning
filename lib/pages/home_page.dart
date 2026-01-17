@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'profile_page.dart';
 import 'message_page.dart';
 import 'media_page.dart';
@@ -32,7 +33,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // HEADER
   Widget _header(BuildContext context) {
   return Container(
     padding: const EdgeInsets.fromLTRB(30, 15, 30, 50),
@@ -75,17 +75,29 @@ class HomePage extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const NotificationPage(),
-              ),
-            );
-          },
-          icon: const Icon(Icons.notifications, color: Colors.white),
+       IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const NotificationPage(),
+            ),
+          );
+        },
+        icon: Container(
+          width: 40,
+          height: 40,
+          decoration: const BoxDecoration(
+            color: Colors.white,        
+            shape: BoxShape.circle,      
+          ),
+          child: const Icon(
+            Icons.notifications,
+            color: Colors.purple,         
+          ),
         ),
+      ),
+
       ],
     ),
   );
@@ -93,7 +105,6 @@ class HomePage extends StatelessWidget {
 
 
 
-  // SEARCH BAR
   Widget _searchBar() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -105,10 +116,8 @@ class HomePage extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
 
-            // ✅ BORDER
             border: Border.all(color: Colors.purple.shade300, width: 1.5),
 
-            // ✅ SHADOW
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(),
@@ -119,9 +128,9 @@ class HomePage extends StatelessWidget {
           ),
           child: TextField(
             decoration: const InputDecoration(
-              hintText: 'Search',
+              hintText: 'ស្វែងរកវគ្កសិក្សា',
               prefixIcon: Icon(Icons.search),
-              border: InputBorder.none, // remove TextField border
+              border: InputBorder.none, 
               contentPadding: EdgeInsets.symmetric(vertical: 14),
             ),
           ),
@@ -130,38 +139,61 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // BANNER
-  Widget _banner() {
+    Widget _banner() {
+    final List<String> imageList = [
+      'assets/images/courseContainer.png',
+      'assets/images/1.jpg',
+    ];
+
     return Transform.translate(
-      offset: const Offset(0, -30), // ⬆ move up
+      offset: const Offset(0, -30),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          width: 370,
+        child: SizedBox(
+          width: 370,  
           height: 210,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            image: const DecorationImage(
-              image: AssetImage('assets/images/courseContainer.png'),
-              fit: BoxFit.cover,
+          child: CarouselSlider(
+            options: CarouselOptions(
+              height: 210,                        
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 3),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              enlargeCenterPage: true,
+              viewportFraction: 1.0,             
             ),
+            items: imageList.map((imagePath) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: AssetImage(imagePath),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
+              );
+            }).toList(),
           ),
         ),
       ),
     );
   }
 
-  // PURPLE LABEL BEFORE INSTRUCTOR
+
   Widget _sectionLabel(String text) {
     return Container(
-      width: double.infinity, // full width
-      color: Colors.purple, // Purple background
-      padding: const EdgeInsets.symmetric(vertical: 12), // vertical padding only
+      width: double.infinity, 
+      color: Colors.purple, 
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Text(
         text,
-        textAlign: TextAlign.center, // optional: center the text
+        textAlign: TextAlign.center, 
         style: const TextStyle(
-          color: Colors.white, // White text
+          color: Colors.white, 
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),
@@ -177,7 +209,6 @@ class HomePage extends StatelessWidget {
   'assets/images/profile/makara.jpg',
 ];
 
-  // INSTRUCTORS
   Widget _instructorSection() {
   return Padding(
     padding: const EdgeInsets.all(16),
@@ -242,19 +273,19 @@ Widget _techIcons() {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16),
     child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Enable horizontal scroll
+      scrollDirection: Axis.horizontal, 
       child: Row(
         children: techImages.map((image) {
           return Container(
-            margin: const EdgeInsets.only(right: 12), // space between logos
-            width: 40, // circle size
+            margin: const EdgeInsets.only(right: 12), 
+            width: 40, 
             height: 40,
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
             child: Padding(
-              padding: const EdgeInsets.all(6), // inner padding
+              padding: const EdgeInsets.all(6), 
               child: Image.asset(
                 image,
                 fit: BoxFit.contain,
@@ -268,66 +299,84 @@ Widget _techIcons() {
 }
 
 
-  // COURSES GRID
-  Widget _courseGrid() {
+Widget _courseGrid() {
+  final courses = [
+    {'title': 'វគ្កសិក្សា C++ Programming', 'image': 'assets/images/coursesImg/cppCourse.png'},
+    {'title': 'វគ្កសិក្សា Web Design', 'image': 'assets/images/coursesImg/html&cssCourse.png'},
+    {'title': 'វគ្កសិក្សា Flutter Development', 'image': 'assets/images/coursesImg/flutter.png'},
+    {'title': 'វគ្កសិក្សា Java Programming', 'image': 'assets/images/coursesImg/javaCourse.png'},
+    {'title': 'វគ្កសិក្សា Python Programming', 'image': 'assets/images/coursesImg/pythonCourse.png'},
+  ];
+
   return Padding(
     padding: const EdgeInsets.all(16),
-    child: GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      children: [
-        _courseCard('C# Programming', 'assets/images/coursesImg/cppCourse.png'),
-        _courseCard('Web Design', 'assets/images/coursesImg/html&cssCourse.png'),
-      ],
+    child: SizedBox(
+      height: 190,
+      child: GridView.builder(
+        scrollDirection: Axis.horizontal, 
+        itemCount: courses.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1, 
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemBuilder: (context, index) {
+          return _courseCard(
+            courses[index]['title']!,
+            courses[index]['image']!,
+          );
+        },
+      ),
     ),
   );
 }
 
-
-  Widget _courseCard(String title, String imagePath) {
+Widget _courseCard(String title, String imagePath) {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.blueAccent, // Card background color
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black26,
-          blurRadius: 4,
-          offset: Offset(2, 2),
-        ),
-      ],
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: Colors.purple.shade200, width: 1.5),
     ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    child: Stack(
       children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+       Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10), 
             child: Image.asset(
-              imagePath, // Example: 'assets/images/csharp.png'
-              fit: BoxFit.contain,
+              imagePath,
+              width: 250,
+              height: 180,
+              fit: BoxFit.cover,
             ),
           ),
         ),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(108, 0, 0, 0),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12),
+      ),
+
+
+        Positioned(
+          bottom: 10,
+          left: 10,
+          right: 10,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(60, 0, 0, 0),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
             ),
-          ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
           ),
         ),
@@ -337,7 +386,7 @@ Widget _techIcons() {
 }
 
 
-  // BOTTOM NAV
+
   Widget _bottomNav(BuildContext context) {
   return BottomNavigationBar(
     selectedItemColor: Colors.purple,

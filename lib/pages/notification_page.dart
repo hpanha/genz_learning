@@ -8,7 +8,6 @@ class NotificationPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // ===== App Bar =====
       appBar: AppBar(
         backgroundColor: const Color(0xFF8E2DE2),
         elevation: 0,

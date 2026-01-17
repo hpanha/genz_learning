@@ -31,12 +31,10 @@ class SplashScreen extends StatelessWidget {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          // Blue background
           SizedBox.expand(
             child: Image.asset('assets/images/binaryBG.png', fit: BoxFit.fill),
           ),
 
-          // White curved bottom section
           Align(
             alignment: Alignment.bottomCenter,
             child: ClipPath(
@@ -48,7 +46,6 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
 
-          // Logo circle
           Positioned(
             top: screenHeight * 0.3,
             child: Container(
@@ -129,12 +126,11 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
-// Custom clipper for top curve
 class TopCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.lineTo(0, 60); // start 60 px down from top-left
+    path.lineTo(0, 60); 
     path.quadraticBezierTo(
       size.width / 2,
       180,
