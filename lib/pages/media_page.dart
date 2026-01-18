@@ -11,25 +11,16 @@ class MediaPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
-      appBar: AppBar(
-        backgroundColor: Colors.purple,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'All video_course',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
+      
 
       bottomNavigationBar: _bottomNav(context),
 
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _header(),
+            _header(context),
             _searchBar(),
-            _categoryList(),
+            _categoryList(context),
             _courseList(),
             const SizedBox(height: 20),
           ],
@@ -38,34 +29,35 @@ class MediaPage extends StatelessWidget {
     );
   }
 
-  // ================= HEADER =================
-  Widget _header() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Colors.purple,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
+  Widget _header(BuildContext context) {
+  return Container(
+    padding: const EdgeInsets.fromLTRB(30, 30, 30, 40),
+    decoration: const BoxDecoration(
+      color: Colors.purple,
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(24),
+        bottomRight: Radius.circular(24),
       ),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.only(top: 15), // 👈 move down
       child: Row(
         children: [
-          const CircleAvatar(
-            radius: 22,
-            backgroundImage:
-                AssetImage('assets/images/profile/phorn.jpg'),
+          GestureDetector(
+            onTap: () {},
+            child: const CircleAvatar(
+              radius: 22,
+              backgroundImage:
+                  AssetImage('assets/images/profile/phorn.jpg'),
+            ),
           ),
           const SizedBox(width: 12),
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 'Horm Sophorn',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               Text(
                 'Good morning!',
@@ -73,16 +65,13 @@ class MediaPage extends StatelessWidget {
               ),
             ],
           ),
-          const Spacer(),
-          const CircleAvatar(
-            radius: 14,
-            backgroundColor: Colors.orange,
-            child: Icon(Icons.star, size: 16, color: Colors.white),
-          ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+}
 
   // ================= SEARCH =================
   Widget _searchBar() {
@@ -105,28 +94,81 @@ class MediaPage extends StatelessWidget {
     );
   }
 
-  // ================= CATEGORY =================
-  Widget _categoryList() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+ Widget _categoryList(BuildContext context) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+
+          iconColor: Colors.white,
+          collapsedIconColor: const Color.fromARGB(255, 255, 255, 255),
+
+          title: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+            decoration: const BoxDecoration(
+              color: Colors.deepPurple,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(14),
+                topRight: Radius.circular(14),
+              ),
+            ),
+            child: Row(
+              children: const [
+                Icon(Icons.video_library, color: Colors.white, size: 20),
+                SizedBox(width: 10),
+                Text(
+                  'វីដេអូ',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(14),
+                  bottomRight: Radius.circular(14),
+                ),
+              ),
+              child: Column(
+                children: const [
+                  _CategoryItem(title: 'វីដេអូ UI & UX'),
+                  Divider(height: 1),
+                  _CategoryItem(title: 'វីដេអូ កម្មវិធីទូរស័ព្ទ'),
+                  Divider(height: 1),
+                  _CategoryItem(title: 'វីដេអូ កម្មវិធីគេហទំព័រ'),
+                  Divider(height: 1),
+                  _CategoryItem(title: 'វីដេអូ កម្មវិធីកុំព្យូទ័រ'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Column(
-        children: const [
-          _CategoryItem(title: 'វីដេអូ UI & UX'),
-          Divider(),
-          _CategoryItem(title: 'វីដេអូ កម្មវិធីទូរស័ព្ទ'),
-          Divider(),
-          _CategoryItem(title: 'វីដេអូ កម្មវិធីគេហទំព័រ'),
-          Divider(),
-          _CategoryItem(title: 'វីដេអូ កម្មវិធីកុំព្យូទ័រ'),
-        ],
-      ),
-    );
-  }
+    ),
+  );
+}
+
+
+
+
 
   // ================= COURSE LIST =================
   Widget _courseList() {
@@ -193,7 +235,7 @@ class MediaPage extends StatelessWidget {
       ],
     );
   }
-}
+
 
 // ================= CATEGORY ITEM =================
 class _CategoryItem extends StatelessWidget {
