@@ -1,27 +1,79 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
 import 'message_page.dart';
+import 'course_detail_page.dart';
+import 'home_page.dart';
+import 'notification_page.dart';
 
+/// ================= COURSE MODEL =================
+class Courses {
+  final String image;
+  final String title;
+  final String lessons;
+  final double progress;
+  final String category;
 
-class MediaPage extends StatelessWidget {
+  Courses({
+    required this.image,
+    required this.title,
+    required this.lessons,
+    required this.progress,
+    required this.category,
+  });
+}
+
+/// ================= MEDIA PAGE =================
+class MediaPage extends StatefulWidget {
   const MediaPage({super.key});
 
   @override
+  State<MediaPage> createState() => _MediaPageState();
+}
+
+class _MediaPageState extends State<MediaPage> {
+  String selectedCategory = 'All';
+
+  final List<Courses> allCourses = [
+    Courses(
+      image: 'assets/images/coursesImg/cppCourse.png',
+      title: 'វគ្គសិក្សាកម្មវិធីកុំព្យូទ័រ C++',
+      lessons: '៤៨ មេរៀន',
+      progress: 0.75,
+      category: 'Desktop',
+    ),
+    Courses(
+      image: 'assets/images/coursesImg/flutter.png',
+      title: 'វគ្គសិក្សាកម្មវិធី Flutter',
+      lessons: '៦៨ មេរៀន',
+      progress: 0.30,
+      category: 'Mobile',
+    ),
+    Courses(
+      image: 'assets/images/coursesImg/javaCourse.png',
+      title: 'វគ្គសិក្សា Web Fullstack',
+      lessons: '៥០ មេរៀន',
+      progress: 0.20,
+      category: 'Web',
+    ),
+  ];
+
+  @override
   Widget build(BuildContext context) {
+    final filteredCourses = selectedCategory == 'All'
+        ? allCourses
+        : allCourses
+            .where((c) => c.category == selectedCategory)
+            .toList();
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
-
-      
-
       bottomNavigationBar: _bottomNav(context),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _header(context),
-            _searchBar(),
-            _categoryList(context),
-            _courseList(),
+            _header(),
+            _categoryList(),
+            _courseList(filteredCourses),
             const SizedBox(height: 20),
           ],
         ),
@@ -29,9 +81,10 @@ class MediaPage extends StatelessWidget {
     );
   }
 
-  Widget _header(BuildContext context) {
+  // ================= HEADER =================
+ Widget _header() {
   return Container(
-    padding: const EdgeInsets.fromLTRB(30, 30, 30, 40),
+    padding: const EdgeInsets.fromLTRB(20, 45, 20, 35),
     decoration: const BoxDecoration(
       color: Colors.purple,
       borderRadius: BorderRadius.only(
@@ -39,175 +92,148 @@ class MediaPage extends StatelessWidget {
         bottomRight: Radius.circular(24),
       ),
     ),
-    child: Padding(
-      padding: const EdgeInsets.only(top: 15), // 👈 move down
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {},
-            child: const CircleAvatar(
-              radius: 22,
-              backgroundImage:
-                  AssetImage('assets/images/profile/phorn.jpg'),
+    child: Row(
+      children: [
+        // Profile avatar + info
+        const CircleAvatar(
+          radius: 22,
+          backgroundImage: AssetImage('assets/images/profile/phorn.jpg'),
+        ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Horm Sophorn',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Horm Sophorn',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+            Text(
+              'Good morning!',
+              style: TextStyle(color: Colors.white70),
+            ),
+          ],
+        ),
+        const Spacer(),
+        // Notification button
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const NotificationPage(),
               ),
-              Text(
-                'Good morning!',
-                style: TextStyle(color: Colors.white70),
-              ),
-            ],
+            );
+          },
+          icon: const Icon(
+            Icons.notifications,
+            color: Colors.white,
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
 
-}
 
-  // ================= SEARCH =================
-  Widget _searchBar() {
+  // ================= CATEGORY LIST =================
+  Widget _categoryList() {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'ស្វែងរក',
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: const Icon(Icons.tune),
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(vertical: 0),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: ExpansionTile(
+          iconColor: Colors.purple,
+          title: Row(
+            children: const [
+              Icon(Icons.video_library, color: Colors.purple),
+              SizedBox(width: 10),
+              Text('វីដេអូ',
+                  style: TextStyle(fontWeight: FontWeight.w600)),
+            ],
           ),
+          children: [
+            _categoryItem('All', 'All'),
+            _categoryItem('វីដេអូ UI & UX', 'UI'),
+            _categoryItem('វីដេអូ កម្មវិធីទូរស័ព្ទ', 'Mobile'),
+            _categoryItem('វីដេអូ កម្មវិធីគេហទំព័រ', 'Web'),
+            _categoryItem('វីដេអូ កម្មវិធីកុំព្យូទ័រ', 'Desktop'),
+          ],
         ),
       ),
     );
   }
 
- Widget _categoryList(BuildContext context) {
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 16),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(14),
-    ),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          dividerColor: Colors.transparent,
-        ),
-        child: ExpansionTile(
-          tilePadding: EdgeInsets.zero,
-          childrenPadding: EdgeInsets.zero,
-
-          iconColor: Colors.white,
-          collapsedIconColor: const Color.fromARGB(255, 255, 255, 255),
-
-          title: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
-            decoration: const BoxDecoration(
-              color: Colors.deepPurple,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(14),
-                topRight: Radius.circular(14),
-              ),
-            ),
-            child: Row(
-              children: const [
-                Icon(Icons.video_library, color: Colors.white, size: 20),
-                SizedBox(width: 10),
-                Text(
-                  'វីដេអូ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(14),
-                  bottomRight: Radius.circular(14),
-                ),
-              ),
-              child: Column(
-                children: const [
-                  _CategoryItem(title: 'វីដេអូ UI & UX'),
-                  Divider(height: 1),
-                  _CategoryItem(title: 'វីដេអូ កម្មវិធីទូរស័ព្ទ'),
-                  Divider(height: 1),
-                  _CategoryItem(title: 'វីដេអូ កម្មវិធីគេហទំព័រ'),
-                  Divider(height: 1),
-                  _CategoryItem(title: 'វីដេអូ កម្មវិធីកុំព្យូទ័រ'),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-
-
-
+  Widget _categoryItem(String title, String category) {
+    return ListTile(
+      leading: const Icon(Icons.play_circle, color: Colors.purple),
+      title: Text(title),
+      trailing: selectedCategory == category
+          ? const Icon(Icons.check, color: Colors.purple)
+          : null,
+      onTap: () {
+        setState(() {
+          selectedCategory = category;
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
 
   // ================= COURSE LIST =================
-  Widget _courseList() {
+  Widget _courseList(List<Courses> courses) {
+    if (courses.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(30),
+        child: Text(
+          'មិនមានវគ្គសិក្សានៅក្នុងប្រភេទនេះទេ',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        children: const [
-          _CourseCard(
-            image: 'assets/images/course/cpp.png',
-            title: 'វគ្គសិក្សាកម្មវិធីកុំព្យូទ័រ C++',
-            lessons: '៤៨ មេរៀន',
-            progress: 0.75,
-          ),
-          _CourseCard(
-            image: 'assets/images/course/flutter.png',
-            title: 'វគ្គសិក្សាកម្មវិធី Flutter',
-            lessons: '៦៨ មេរៀន',
-            progress: 0.30,
-          ),
-          _CourseCard(
-            image: 'assets/images/course/web.png',
-            title: 'វគ្គសិក្សា Web Fullstack',
-            lessons: '៥០ មេរៀន',
-            progress: 0.20,
-          ),
-        ],
+        children:
+courses
+    .map(
+      (course) => GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CourseDetailPage(course: course),
+            ),
+          );
+        },
+        child: _CourseCard(course: course),
+      ),
+    )
+    .toList(),
       ),
     );
   }
 
   // ================= BOTTOM NAV =================
   Widget _bottomNav(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.purple,
-      unselectedItemColor: Colors.grey,
-      currentIndex: 1, // Courses selected
-      onTap: (index) {
-        Navigator.pop(context);
-        if (index == 1) {
+  return BottomNavigationBar(
+    selectedItemColor: Colors.purple,
+    unselectedItemColor: Colors.grey,
+    currentIndex: 1,
+    onTap: (index) {
+      if (index == 0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      }
+      if (index == 1) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const MediaPage()),
@@ -225,93 +251,73 @@ class MediaPage extends StatelessWidget {
           MaterialPageRoute(builder: (_) => const ProfilePage()),
         );
       }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.play_circle), label: 'Courses'),
-        BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-      ],
-    );
-  }
-
-
-// ================= CATEGORY ITEM =================
-class _CategoryItem extends StatelessWidget {
-  final String title;
-
-  const _CategoryItem({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.play_circle, color: Colors.purple),
-        const SizedBox(width: 10),
-        Expanded(child: Text(title)),
-        const Icon(Icons.chevron_right),
+    },
+    items: const [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.play_circle),
+        label: 'Courses',
+      ),
+      BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     );
   }
 }
 
-// ================= COURSE CARD =================
+/// ================= COURSE CARD =================
 class _CourseCard extends StatelessWidget {
-  final String image;
-  final String title;
-  final String lessons;
-  final double progress;
+  final Courses course;
 
-  const _CourseCard({
-    required this.image,
-    required this.title,
-    required this.lessons,
-    required this.progress,
-  });
+  const _CourseCard({required this.course});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 8),
+          BoxShadow(color: Colors.black12, blurRadius: 6),
         ],
       ),
       child: Row(
         children: [
-          Image.asset(image, width: 48),
-          const SizedBox(width: 12),
+          Image.asset(course.image, width: 55),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(course.title,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 4),
-                Text(lessons,
+                Text(course.lessons,
                     style:
                         const TextStyle(fontSize: 12, color: Colors.grey)),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(
-                  value: progress,
+                  value: course.progress,
                   backgroundColor: Colors.grey[300],
                   color: Colors.purple,
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          const Text(
-            'PRO',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.purple,
-              fontWeight: FontWeight.bold,
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              // ignore: deprecated_member_use
+              color: Colors.purple.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Text(
+              'PRO',
+              style: TextStyle(
+                  color: Colors.purple, fontWeight: FontWeight.bold),
             ),
           ),
         ],

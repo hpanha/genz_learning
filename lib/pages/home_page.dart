@@ -9,13 +9,12 @@ import '../models/course.dart';
 import '../services/course_service.dart';
 import '../models/about.dart';
 import '../services/about_service.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import '../models/slider_item.dart';
 import '../services/slider_service.dart';
 
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -383,7 +382,7 @@ Widget _courseCard(Course course) {
                 width: 250,
                 height: 180,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
+                errorBuilder: (_, _, _) =>
                     const Icon(Icons.broken_image),
               ),
             ),

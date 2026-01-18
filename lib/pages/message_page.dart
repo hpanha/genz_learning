@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
 import 'media_page.dart';
+import 'home_page.dart';
 
 class MessagePage extends StatelessWidget {
   const MessagePage({super.key});
@@ -97,41 +98,44 @@ class MessagePage extends StatelessWidget {
 
   // ================= BOTTOM NAV =================
   Widget _bottomNav(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.purple,
-      unselectedItemColor: Colors.grey,
-      currentIndex: 2, // Chat selected
-      onTap: (index) {
-        if (index == 0) {
-          Navigator.pop(context);
-        }
-        if (index == 1) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const MediaPage()),
-          );
-        }
-        if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const MessagePage()),
-          );
-        }
-        if (index == 3) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const ProfilePage()),
-          );
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.play_circle),
-          label: 'Courses',
-        ),
-        BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+  return BottomNavigationBar(
+    selectedItemColor: Colors.purple,
+    unselectedItemColor: Colors.grey,
+    currentIndex: 2,
+    onTap: (index) {
+      if (index == 0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => HomePage()),
+        );
+      }
+      if (index == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MediaPage()),
+        );
+      }
+      if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const MessagePage()),
+        );
+      }
+      if (index == 3) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfilePage()),
+        );
+      }
+    },
+    items: const [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.play_circle),
+        label: 'Courses',
+      ),
+      BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     );
   }
