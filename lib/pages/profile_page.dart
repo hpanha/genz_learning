@@ -64,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const Positioned(
-            top: 60,
+            top: 100,
             left: 0,
             right: 0,
             child: Center(
@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // ================= PROFILE CARD =================
   Widget _profileCard() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -130,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
           // PROFILE IMAGE + EDIT ICON
           Positioned(
-            top: -100,
+            top: -55,
             left: 0,
             right: 0,
             child: Center(
@@ -154,8 +154,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           }
                         : null,
                     child: Container(
-                      width: 200,
-                      height: 200,
+                      width: 150,
+                      height: 150,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(18),
                         image: DecorationImage(
@@ -235,7 +235,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundColor: Colors.purple,
               ),
               onPressed: () => setState(() => isEditing = false),
-              child: const Text('Save'),
+              child: const Text(
+                'Save',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

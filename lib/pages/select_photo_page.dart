@@ -18,8 +18,7 @@ class _SelectPhotoPageState extends State<SelectPhotoPage> {
       imageQuality: 85,
     );
 
-    if (!mounted) return; // ✅ safe check
-
+    if (!mounted) return;
     if (file != null) {
       Navigator.pop(context, FileImage(File(file.path)));
     }
@@ -31,8 +30,7 @@ class _SelectPhotoPageState extends State<SelectPhotoPage> {
       imageQuality: 85,
     );
 
-    if (!mounted) return; // ✅ safe check
-
+    if (!mounted) return;
     if (file != null) {
       Navigator.pop(context, FileImage(File(file.path)));
     }
@@ -41,24 +39,88 @@ class _SelectPhotoPageState extends State<SelectPhotoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.purple,
       appBar: AppBar(
-        title: const Text('Select Photo'),
         backgroundColor: Colors.purple,
+        elevation: 0,
+        leading: const BackButton(color: Colors.white),
+        title: const Text(
+          'My Profile',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        // ❌ removed camera icon from AppBar
       ),
-      body: Padding(
+      body: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 16),
         padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(24),
+          ),
+        ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
-              onTap: _pickFromGallery,
+            /// Section title
+            const Text(
+              'Select Photo',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Take Photo'),
-              onTap: _pickFromCamera,
+
+            const SizedBox(height: 20),
+
+            /// Primary actions
+            ElevatedButton.icon(
+              onPressed: _pickFromGallery,
+              icon: const Icon(Icons.photo_library),
+              label: const Text("Choose from Gallery"),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            ElevatedButton.icon(
+              onPressed: _pickFromCamera,
+              icon: const Icon(Icons.camera_alt),
+              label: const Text("Take Photo"),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            /// Preview section (NON-clickable)
+            const Text(
+              'Profile Picture Preview',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+
+            const SizedBox(height: 12),
+
+            SizedBox(
+              height: 80,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: 3,
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  return CircleAvatar(
+                    radius: 36,
+                    backgroundColor: Colors.grey.shade300,
+                    backgroundImage:
+                        const AssetImage('assets/placeholder.jpg'),
+                  );
+                },
+              ),
             ),
           ],
         ),
