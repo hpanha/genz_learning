@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:genz_learning/pages/course_docx_detail_page.dart';
 import 'profile_page.dart';
 import 'message_page.dart';
 import 'media_page.dart';
@@ -354,7 +355,7 @@ Widget _courseGrid() {
             ),
             itemBuilder: (context, index) {
               final course = courses[index];
-              return _courseCard(course);
+              return _courseCard(context, course);
             },
           );
         },
@@ -364,59 +365,72 @@ Widget _courseGrid() {
 }
 
 
-Widget _courseCard(Course course) {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: Colors.purple.shade200, width: 1.5),
-    ),
-    child: Stack(
-      children: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                course.imgUrl, 
-                width: 250,
-                height: 180,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) =>
-                    const Icon(Icons.broken_image),
+Widget _courseCard(BuildContext context, Course course) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CourseDocxDetailPage(
+            slug: course.slug,
+          ),
+        ),
+      );
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.purple.shade200, width: 1.5),
+      ),
+      child: Stack(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  course.imgUrl,
+                  width: 250,
+                  height: 180,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) =>
+                      const Icon(Icons.broken_image),
+                ),
               ),
             ),
           ),
-        ),
 
-        Positioned(
-          bottom: 10,
-          left: 10,
-          right: 10,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(60, 0, 0, 0),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16),
+          Positioned(
+            bottom: 10,
+            left: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(60, 0, 0, 0),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                ),
               ),
-            ),
-            child: Text(
-              course.titleKh,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
+              child: Text(
+                course.titleKh,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
+
 
 
   Widget _bottomNav(BuildContext context) {
