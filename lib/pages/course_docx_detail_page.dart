@@ -80,7 +80,7 @@ class CourseDocxDetailPage extends StatelessWidget {
                     const SizedBox(height: 16),
                   ],
                 );
-              }).toList(),
+              }),
             ],
           );
         },
