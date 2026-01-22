@@ -1,28 +1,15 @@
 import 'package:flutter/material.dart';
-import 'profile_page.dart';
-import 'message_page.dart';
+import '../models/video_course.dart';
+import '../models/video_category.dart';
+import '../services/video_course_service.dart';
+import '../services/video_category_service.dart';
 import 'course_detail_page.dart';
-import 'home_page.dart';
+import 'register_page.dart';
 import 'notification_page.dart';
+import 'message_page.dart';
+import 'profile_page.dart';
+import 'home_page.dart';
 
-/// ================= COURSE MODEL =================
-class Courses {
-  final String image;
-  final String title;
-  final String lessons;
-  final double progress;
-  final String category;
-
-  Courses({
-    required this.image,
-    required this.title,
-    required this.lessons,
-    required this.progress,
-    required this.category,
-  });
-}
-
-/// ================= MEDIA PAGE =================
 class MediaPage extends StatefulWidget {
   const MediaPage({super.key});
 
@@ -31,192 +18,187 @@ class MediaPage extends StatefulWidget {
 }
 
 class _MediaPageState extends State<MediaPage> {
-  String selectedCategory = 'All';
-
-  final List<Courses> allCourses = [
-    Courses(
-      image: 'assets/images/coursesImg/cppCourse.png',
-      title: 'វគ្គសិក្សាកម្មវិធីកុំព្យូទ័រ C++',
-      lessons: '៤៨ មេរៀន',
-      progress: 0.75,
-      category: 'Desktop',
-    ),
-    Courses(
-      image: 'assets/images/coursesImg/flutter.png',
-      title: 'វគ្គសិក្សាកម្មវិធី Flutter',
-      lessons: '៦៨ មេរៀន',
-      progress: 0.30,
-      category: 'Mobile',
-    ),
-    Courses(
-      image: 'assets/images/coursesImg/javaCourse.png',
-      title: 'វគ្គសិក្សា Web Fullstack',
-      lessons: '៥០ មេរៀន',
-      progress: 0.20,
-      category: 'Web',
-    ),
-  ];
+  int? selectedCategoryId;
 
   @override
   Widget build(BuildContext context) {
-    final filteredCourses = selectedCategory == 'All'
-        ? allCourses
-        : allCourses
-            .where((c) => c.category == selectedCategory)
-            .toList();
-
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      bottomNavigationBar: _bottomNav(context),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _header(),
-            _categoryList(),
-            _courseList(filteredCourses),
-            const SizedBox(height: 20),
-          ],
-        ),
+      body: Column(
+        children: [
+          _header(context),
+          _categoryList(),
+          Expanded(child: _videoList()),
+        ],
       ),
+      bottomNavigationBar: _bottomNav(context),
     );
   }
 
   // ================= HEADER =================
- Widget _header() {
-  return Container(
-    padding: const EdgeInsets.fromLTRB(20, 45, 20, 35),
-    decoration: const BoxDecoration(
-      color: Colors.purple,
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(24),
-        bottomRight: Radius.circular(24),
+  Widget _header(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(30, 40, 30, 30),
+      decoration: const BoxDecoration(
+        color: Colors.purple,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
       ),
-    ),
-    child: Row(
-      children: [
-        // Profile avatar + info
-        const CircleAvatar(
-          radius: 22,
-          backgroundImage: AssetImage('assets/images/profile/phorn.jpg'),
-        ),
-        const SizedBox(width: 12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Horm Sophorn',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => RegisterPage()),
+              );
+            },
+            child: const CircleAvatar(
+              radius: 22,
+              backgroundImage:
+                  AssetImage('assets/images/profile/phorn.jpg'),
             ),
-            Text(
-              'Good morning!',
-              style: TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-        const Spacer(),
-        // Notification button
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const NotificationPage(),
-              ),
-            );
-          },
-          icon: const Icon(
-            Icons.notifications,
-            color: Colors.white,
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-
-  // ================= CATEGORY LIST =================
-  Widget _categoryList() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: ExpansionTile(
-          iconColor: Colors.purple,
-          title: Row(
-            children: const [
-              Icon(Icons.video_library, color: Colors.purple),
-              SizedBox(width: 10),
-              Text('វីដេអូ',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(width: 12),
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Horm Sophorn',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              Text(
+                'Good morning!',
+                style: TextStyle(color: Colors.white70),
+              ),
             ],
           ),
-          children: [
-            _categoryItem('All', 'All'),
-            _categoryItem('វីដេអូ UI & UX', 'UI'),
-            _categoryItem('វីដេអូ កម្មវិធីទូរស័ព្ទ', 'Mobile'),
-            _categoryItem('វីដេអូ កម្មវិធីគេហទំព័រ', 'Web'),
-            _categoryItem('វីដេអូ កម្មវិធីកុំព្យូទ័រ', 'Desktop'),
-          ],
-        ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const NotificationPage(),
+                ),
+              );
+            },
+            icon: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.notifications,
+                color: Colors.purple,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _categoryItem(String title, String category) {
-    return ListTile(
-      leading: const Icon(Icons.play_circle, color: Colors.purple),
-      title: Text(title),
-      trailing: selectedCategory == category
-          ? const Icon(Icons.check, color: Colors.purple)
-          : null,
-      onTap: () {
-        setState(() {
-          selectedCategory = category;
-        });
-        Navigator.pop(context);
+  // ================= CATEGORY =================
+  Widget _categoryList() {
+    return FutureBuilder<List<VideoCategory>>(
+      future: VideoCategoryService.fetchCategories(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const LinearProgressIndicator();
+        }
+
+        final categories = snapshot.data!;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              _categoryChip('All', null),
+              ...categories.map(
+                (c) => _categoryChip(c.name, c.id),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
 
-  // ================= COURSE LIST =================
-  Widget _courseList(List<Courses> courses) {
-    if (courses.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.all(30),
-        child: Text(
-          'មិនមានវគ្គសិក្សានៅក្នុងប្រភេទនេះទេ',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
-    }
+  Widget _categoryChip(String name, int? id) {
+    final bool selected = selectedCategoryId == id;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children:
-courses
-    .map(
-      (course) => GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CourseDetailPage(course: course),
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: Text(name),
+        selected: selected,
+        onSelected: (_) {
+          setState(() {
+            selectedCategoryId = id;
+          });
+        },
+        selectedColor: Colors.purple,
+        labelStyle: TextStyle(
+          color: selected ? Colors.white : Colors.black,
+        ),
+      ),
+    );
+  }
+
+  // ================= VIDEO LIST =================
+  Widget _videoList() {
+    return FutureBuilder<List<VideoCourse>>(
+      future: VideoCourseService.fetchVideos(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: const TextStyle(color: Colors.red),
             ),
           );
-        },
-        child: _CourseCard(course: course),
-      ),
-    )
-    .toList(),
-      ),
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No videos found'));
+        }
+
+        final videos = snapshot.data!;
+        final filtered = selectedCategoryId == null
+            ? videos
+            : videos
+                .where((v) => v.categoryId == selectedCategoryId)
+                .toList();
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: filtered.length,
+          itemBuilder: (context, index) {
+            final video = filtered[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CourseDetailPage(video: video),
+                  ),
+                );
+              },
+              child: _VideoCard(video: video),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -265,17 +247,17 @@ courses
   }
 }
 
-/// ================= COURSE CARD =================
-class _CourseCard extends StatelessWidget {
-  final Courses course;
+// ================= VIDEO CARD =================
+class _VideoCard extends StatelessWidget {
+  final VideoCourse video;
 
-  const _CourseCard({required this.course});
+  const _VideoCard({required this.video});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -285,39 +267,12 @@ class _CourseCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset(course.image, width: 55),
-          const SizedBox(width: 14),
+          Image.network(video.thumbnail, width: 80),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(course.title,
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-                const SizedBox(height: 4),
-                Text(course.lessons,
-                    style:
-                        const TextStyle(fontSize: 12, color: Colors.grey)),
-                const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: course.progress,
-                  backgroundColor: Colors.grey[300],
-                  color: Colors.purple,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              // ignore: deprecated_member_use
-              color: Colors.purple.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Text(
-              'PRO',
-              style: TextStyle(
-                  color: Colors.purple, fontWeight: FontWeight.bold),
+            child: Text(
+              video.title,
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ],

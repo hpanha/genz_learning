@@ -9,7 +9,7 @@ class NotificationPage extends StatelessWidget {
       backgroundColor: Colors.white,
 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8E2DE2),
+        backgroundColor: Colors.purple,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -41,7 +41,7 @@ class NotificationPage extends StatelessWidget {
           Icon(
             Icons.notifications_none_rounded,
             size: 120,
-            color: Color(0xFF8E2DE2),
+            color: Colors.purple,
           ),
           SizedBox(height: 20),
           Text(

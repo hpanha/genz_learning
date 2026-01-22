@@ -12,6 +12,8 @@ import '../models/about.dart';
 import '../services/about_service.dart';
 import '../models/slider_item.dart';
 import '../services/slider_service.dart';
+import '../services/tool_service.dart';
+import '../models/tool.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -59,7 +61,7 @@ class HomePage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => RegisterPage(),
               ),
-            );
+            ); 
           },
           child: const CircleAvatar(
             radius: 22,
@@ -114,22 +116,22 @@ class HomePage extends StatelessWidget {
 
   Widget _searchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       child: Transform.translate(
         offset: const Offset(0, -45),
         child: Container(
           width: 360,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(10),
 
             border: Border.all(color: Colors.purple.shade300, width: 1.5),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(),
-                blurRadius: 15,
-                offset: const Offset(0, 4),
+                color: const Color.fromARGB(83, 0, 0, 0).withValues(),
+                blurRadius: 2,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -286,44 +288,62 @@ class HomePage extends StatelessWidget {
 
 
 Widget _techIcons() {
-  final List<String> techImages = [
-    'assets/images/courseLogo/cpp.png',
-    'assets/images/courseLogo/css.png',
-    'assets/images/courseLogo/html.png',
-    'assets/images/courseLogo/js.png',
-    'assets/images/courseLogo/flutter.png',
-    'assets/images/courseLogo/laravel.png',
-    'assets/images/courseLogo/mysql.png',
-    'assets/images/courseLogo/react.png',
-  ];
-
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal, 
-      child: Row(
-        children: techImages.map((image) {
-          return Container(
-            margin: const EdgeInsets.only(right: 12), 
-            width: 40, 
+    child: FutureBuilder<List<Tool>>(
+      future: ToolService.fetchSliders(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox(
             height: 40,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(6), 
-              child: Image.asset(
-                image,
-                fit: BoxFit.contain,
-              ),
-            ),
+            child: Center(child: CircularProgressIndicator()),
           );
-        }).toList(),
-      ),
+        }
+
+        if (snapshot.hasError) {
+          return const Text("Failed to load tools");
+        }
+
+        final tools = snapshot.data!;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: tools.map((tool) {
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Image.network(
+                    tool.image ,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.broken_image, size: 18);
+                    },
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
     ),
   );
 }
+
 
 
 Widget _courseGrid() {
