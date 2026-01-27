@@ -1,31 +1,31 @@
-class VideoCourse {
+class Video {
   final int id;
   final String title;
-  final String author;
-  final String url;
   final String youtubeId;
   final int categoryId;
+  final int subCategoryId;
   final String categoryName;
+  final String subCategoryName;
 
-  VideoCourse({
+  Video({
     required this.id,
     required this.title,
-    required this.author,
-    required this.url,
     required this.youtubeId,
     required this.categoryId,
+    required this.subCategoryId,
     required this.categoryName,
+    required this.subCategoryName,
   });
 
-  factory VideoCourse.fromJson(Map<String, dynamic> json) {
-    return VideoCourse(
+  factory Video.fromJson(Map<String, dynamic> json) {
+    return Video(
       id: json['id'],
       title: json['title'],
-      author: json['author'],
-      url: json['url'],
       youtubeId: json['youtube_id'],
       categoryId: json['vd_category_id'],
+      subCategoryId: json['sub_cat_id'],
       categoryName: json['category']['name'],
+      subCategoryName: json['sub_category']['sub_name'],
     );
   }
 

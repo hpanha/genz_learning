@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../models/video_course.dart';
-import '../models/video_category.dart';
-import '../services/video_course_service.dart';
-import '../services/video_category_service.dart';
-import 'course_detail_page.dart';
+import '../models/video.dart';
+import '../models/category.dart';
+import '../services/video_service.dart';
+import '../services/category_service.dart';
+import 'playlist_detail_page.dart';
 import 'register_page.dart';
 import 'notification_page.dart';
 import 'message_page.dart';
@@ -18,17 +18,55 @@ class MediaPage extends StatefulWidget {
 }
 
 class _MediaPageState extends State<MediaPage> {
-  int? selectedCategoryId;
+  String selectedCategory = 'All';
+  late Future<List<Category>> _categoryFuture;
+  List<Video> _allVideos = [];
+  bool _loadingVideos = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoryFuture = CategoryService.fetch();
+    _fetchVideos();
+  }
+
+  void _fetchVideos() async {
+    _allVideos = await VideoService.fetch();
+    setState(() {
+      _loadingVideos = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Video> filteredVideos = selectedCategory == 'All'
+        ? _allVideos
+        : _allVideos.where((v) => v.categoryName == selectedCategory).toList();
+
+    final Map<String, List<Video>> grouped = {};
+    for (var v in filteredVideos) {
+      grouped.putIfAbsent(v.subCategoryName, () => []);
+      grouped[v.subCategoryName]!.add(v);
+    }
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
           _header(context),
           _categoryList(),
-          Expanded(child: _videoList()),
+          Expanded(
+            child: _loadingVideos
+                ? const Center(child: CircularProgressIndicator())
+                : ListView(
+                    padding: const EdgeInsets.all(16),
+                    children: grouped.entries.map((e) {
+                      final list = e.value;
+                      if (list.length == 1) return _VideoCard(video: list.first);
+                      return PlaylistCard(title: e.key, videos: list);
+                    }).toList(),
+                  ),
+          ),
         ],
       ),
       bottomNavigationBar: _bottomNav(context),
@@ -38,12 +76,12 @@ class _MediaPageState extends State<MediaPage> {
   // ================= HEADER =================
   Widget _header(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(30, 40, 30, 30),
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 28),
       decoration: const BoxDecoration(
         color: Colors.purple,
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
+          bottomLeft: Radius.circular(26),
+          bottomRight: Radius.circular(26),
         ),
       ),
       child: Row(
@@ -56,23 +94,20 @@ class _MediaPageState extends State<MediaPage> {
               );
             },
             child: const CircleAvatar(
-              radius: 22,
-              backgroundImage:
-                  AssetImage('assets/images/profile/phorn.jpg'),
+              radius: 24,
+              backgroundImage: AssetImage('assets/images/profile/phorn.jpg'),
             ),
           ),
           const SizedBox(width: 12),
           const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Horm Sophorn',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-              Text(
-                'Good morning!',
-                style: TextStyle(color: Colors.white70),
-              ),
+              Text('Horm Sophorn',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              Text('Good morning!', style: TextStyle(color: Colors.white70)),
             ],
           ),
           const Spacer(),
@@ -80,22 +115,15 @@ class _MediaPageState extends State<MediaPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const NotificationPage(),
-                ),
+                MaterialPageRoute(builder: (_) => const NotificationPage()),
               );
             },
             icon: Container(
-              width: 40,
-              height: 40,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.notifications,
-                color: Colors.purple,
-              ),
+              width: 42,
+              height: 42,
+              decoration:
+                  const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+              child: const Icon(Icons.notifications, color: Colors.purple),
             ),
           ),
         ],
@@ -103,26 +131,19 @@ class _MediaPageState extends State<MediaPage> {
     );
   }
 
-  // ================= CATEGORY =================
+  // ================= CATEGORY LIST =================
   Widget _categoryList() {
-    return FutureBuilder<List<VideoCategory>>(
-      future: VideoCategoryService.fetchCategories(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const LinearProgressIndicator();
-        }
-
-        final categories = snapshot.data!;
-
+    return FutureBuilder<List<Category>>(
+      future: _categoryFuture,
+      builder: (context, snap) {
+        if (!snap.hasData) return const LinearProgressIndicator();
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              _categoryChip('All', null),
-              ...categories.map(
-                (c) => _categoryChip(c.name, c.id),
-              ),
+              _categoryChip('All'),
+              ...snap.data!.map((c) => _categoryChip(c.name)),
             ],
           ),
         );
@@ -130,118 +151,61 @@ class _MediaPageState extends State<MediaPage> {
     );
   }
 
-  Widget _categoryChip(String name, int? id) {
-    final bool selected = selectedCategoryId == id;
-
+  Widget _categoryChip(String name) {
+    final bool selected = selectedCategory == name;
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: ChoiceChip(
-        label: Text(name),
-        selected: selected,
-        onSelected: (_) {
+      padding: const EdgeInsets.only(right: 10),
+      child: GestureDetector(
+        onTap: () {
           setState(() {
-            selectedCategoryId = id;
+            selectedCategory = name;
           });
         },
-        selectedColor: Colors.purple,
-        labelStyle: TextStyle(
-          color: selected ? Colors.white : Colors.black,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          decoration: BoxDecoration(
+            color: selected ? Colors.purple : Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+          ),
+          child: Text(
+            name,
+            style: TextStyle(
+              color: selected ? Colors.white : Colors.black87,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );
   }
 
-  // ================= VIDEO LIST =================
-  Widget _videoList() {
-    return FutureBuilder<List<VideoCourse>>(
-      future: VideoCourseService.fetchVideos(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              'Error: ${snapshot.error}',
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
-        }
-
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No videos found'));
-        }
-
-        final videos = snapshot.data!;
-        final filtered = selectedCategoryId == null
-            ? videos
-            : videos
-                .where((v) => v.categoryId == selectedCategoryId)
-                .toList();
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: filtered.length,
-          itemBuilder: (context, index) {
-            final video = filtered[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CourseDetailPage(video: video),
-                  ),
-                );
-              },
-              child: _VideoCard(video: video),
-            );
-          },
-        );
-      },
-    );
-  }
-
   // ================= BOTTOM NAV =================
   Widget _bottomNav(BuildContext context) {
-  return BottomNavigationBar(
-    selectedItemColor: Colors.purple,
-    unselectedItemColor: Colors.grey,
-    currentIndex: 1,
-    onTap: (index) {
-      if (index == 0) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const HomePage()),
-        );
-      }
-      if (index == 1) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const MediaPage()),
-        );
-      }
-      if (index == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const MessagePage()),
-        );
-      }
-      if (index == 3) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const ProfilePage()),
-        );
-      }
-    },
-    items: const [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.play_circle),
-        label: 'Courses',
-      ),
-      BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+    return BottomNavigationBar(
+      selectedItemColor: Colors.purple,
+      unselectedItemColor: Colors.grey,
+      currentIndex: 1,
+      onTap: (index) {
+        if (index == 0) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const HomePage()));
+        } else if (index == 1) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const MediaPage()));
+        } else if (index == 2) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const MessagePage()));
+        } else if (index == 3) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const ProfilePage()));
+        }
+      },
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(Icons.play_circle), label: 'Courses'),
+        BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
     );
   }
@@ -249,33 +213,49 @@ class _MediaPageState extends State<MediaPage> {
 
 // ================= VIDEO CARD =================
 class _VideoCard extends StatelessWidget {
-  final VideoCourse video;
+  final Video video;
 
-  const _VideoCard({required this.video});
+  const _VideoCard({super.key, required this.video});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6),
-        ],
-      ),
-      child: Row(
-        children: [
-          Image.network(video.thumbnail, width: 80),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              video.title,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
+    return ListTile(
+      leading: Image.network(video.thumbnail),
+      title: Text(video.title),
+      subtitle: Text(video.subCategoryName),
+    );
+  }
+}
+
+// ================= PLAYLIST CARD =================
+class PlaylistCard extends StatelessWidget {
+  final String title;
+  final List<Video> videos;
+
+  const PlaylistCard({
+    super.key,
+    required this.title,
+    required this.videos,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PlaylistDetailPage(title: title, videos: videos),
           ),
-        ],
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: ListTile(
+          leading: Image.network(videos.first.thumbnail),
+          title: Text(title),
+          subtitle: Text('${videos.length} episodes'),
+        ),
       ),
     );
   }
