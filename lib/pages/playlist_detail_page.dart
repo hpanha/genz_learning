@@ -21,14 +21,12 @@ class PlaylistDetailPage extends StatelessWidget {
         title: Text(title),
       ),
       body: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 12),
         itemCount: videos.length,
         itemBuilder: (context, index) {
           final video = videos[index];
 
-          return ListTile(
-            leading: Image.network(video.thumbnail, width: 90),
-            title: Text(video.title),
-            subtitle: Text(video.subCategoryName),
+          return GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
@@ -40,6 +38,45 @@ class PlaylistDetailPage extends StatelessWidget {
                 ),
               );
             },
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      video.thumbnail,
+                      width: 120,
+                      height: 70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          video.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          video.subCategoryName,
+                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
