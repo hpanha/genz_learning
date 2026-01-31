@@ -9,6 +9,8 @@ import 'notification_page.dart';
 import 'message_page.dart';
 import 'profile_page.dart';
 import 'home_page.dart';
+import 'course_detail_page.dart';
+
 
 class MediaPage extends StatefulWidget {
   const MediaPage({super.key});
@@ -211,7 +213,6 @@ class _MediaPageState extends State<MediaPage> {
   }
 }
 
-// ================= VIDEO CARD =================
 class _VideoCard extends StatelessWidget {
   final Video video;
 
@@ -219,15 +220,79 @@ class _VideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Image.network(video.thumbnail),
-      title: Text(video.title),
-      subtitle: Text(video.subCategoryName),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CourseDetailPage(
+              videos: [video],
+              startIndex: 0,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Thumbnail
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Image.network(
+                  video.thumbnail,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Title
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                video.title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            // Sub category
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                video.subCategoryName,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+          ],
+        ),
+      ),
     );
   }
 }
 
-// ================= PLAYLIST CARD =================
+
+
 class PlaylistCard extends StatelessWidget {
   final String title;
   final List<Video> videos;
@@ -250,11 +315,86 @@ class PlaylistCard extends StatelessWidget {
         );
       },
       child: Card(
-        margin: const EdgeInsets.only(bottom: 12),
-        child: ListTile(
-          leading: Image.network(videos.first.thumbnail),
-          title: Text(title),
-          subtitle: Text('${videos.length} episodes'),
+        margin: const EdgeInsets.only(bottom: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Thumbnail
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Stack(
+                  children: [
+                    Image.network(
+                      videos.first.thumbnail,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+
+                    // Playlist overlay
+                    Positioned(
+                      right: 8,
+                      bottom: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black87,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.playlist_play,
+                                color: Colors.white, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              videos.length.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // Playlist title
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                '${videos.length} episodes',
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+          ],
         ),
       ),
     );
