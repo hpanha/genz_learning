@@ -6,11 +6,7 @@ import '../services/category_service.dart';
 import 'playlist_detail_page.dart';
 import 'register_page.dart';
 import 'notification_page.dart';
-import 'message_page.dart';
-import 'profile_page.dart';
-import 'home_page.dart';
 import 'course_detail_page.dart';
-
 
 class MediaPage extends StatefulWidget {
   const MediaPage({super.key});
@@ -32,11 +28,21 @@ class _MediaPageState extends State<MediaPage> {
     _fetchVideos();
   }
 
+  // ================= LOAD VIDEOS =================
   void _fetchVideos() async {
+    setState(() {
+      _loadingVideos = true;
+    });
     _allVideos = await VideoService.fetch();
     setState(() {
       _loadingVideos = false;
     });
+  }
+
+  // ================= REFRESH =================
+  Future<void> _refresh() async {
+    _categoryFuture = CategoryService.fetch();
+    _fetchVideos();
   }
 
   @override
@@ -53,25 +59,29 @@ class _MediaPageState extends State<MediaPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: Column(
-        children: [
-          _header(context),
-          _categoryList(),
-          Expanded(
-            child: _loadingVideos
-                ? const Center(child: CircularProgressIndicator())
-                : ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: grouped.entries.map((e) {
-                      final list = e.value;
-                      if (list.length == 1) return _VideoCard(video: list.first);
-                      return PlaylistCard(title: e.key, videos: list);
-                    }).toList(),
-                  ),
-          ),
-        ],
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: Column(
+          children: [
+            _header(context),
+            _categoryList(),
+            Expanded(
+              child: _loadingVideos
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
+                      physics:
+                          const AlwaysScrollableScrollPhysics(), // allows pull-to-refresh even when list is short
+                      padding: const EdgeInsets.all(16),
+                      children: grouped.entries.map((e) {
+                        final list = e.value;
+                        if (list.length == 1) return _VideoCard(video: list.first);
+                        return PlaylistCard(title: e.key, videos: list);
+                      }).toList(),
+                    ),
+            ),
+          ],
+        ),
       ),
-      bottomNavigationBar: _bottomNav(context),
     );
   }
 
@@ -181,38 +191,9 @@ class _MediaPageState extends State<MediaPage> {
       ),
     );
   }
-
-  // ================= BOTTOM NAV =================
-  Widget _bottomNav(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.purple,
-      unselectedItemColor: Colors.grey,
-      currentIndex: 1,
-      onTap: (index) {
-        if (index == 0) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const HomePage()));
-        } else if (index == 1) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const MediaPage()));
-        } else if (index == 2) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const MessagePage()));
-        } else if (index == 3) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const ProfilePage()));
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.play_circle), label: 'Courses'),
-        BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-      ],
-    );
-  }
 }
 
+// ================= VIDEO CARD =================
 class _VideoCard extends StatelessWidget {
   final Video video;
 
@@ -241,11 +222,8 @@ class _VideoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Thumbnail
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Image.network(
@@ -255,10 +233,7 @@ class _VideoCard extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Title
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
@@ -271,10 +246,7 @@ class _VideoCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-
             const SizedBox(height: 6),
-
-            // Sub category
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
@@ -282,7 +254,6 @@ class _VideoCard extends StatelessWidget {
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
-
             const SizedBox(height: 12),
           ],
         ),
@@ -291,8 +262,7 @@ class _VideoCard extends StatelessWidget {
   }
 }
 
-
-
+// ================= PLAYLIST CARD =================
 class PlaylistCard extends StatelessWidget {
   final String title;
   final List<Video> videos;
@@ -323,11 +293,8 @@ class PlaylistCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Thumbnail
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Stack(
@@ -337,22 +304,18 @@ class PlaylistCard extends StatelessWidget {
                       width: double.infinity,
                       fit: BoxFit.cover,
                     ),
-
-                    // Playlist overlay
                     Positioned(
                       right: 8,
                       bottom: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.black87,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.playlist_play,
-                                color: Colors.white, size: 16),
+                            const Icon(Icons.playlist_play, color: Colors.white, size: 16),
                             const SizedBox(width: 4),
                             Text(
                               videos.length.toString(),
@@ -366,33 +329,21 @@ class PlaylistCard extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Playlist title
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-
             const SizedBox(height: 6),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                '${videos.length} episodes',
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text('${videos.length} episodes', style: const TextStyle(color: Colors.grey)),
             ),
-
             const SizedBox(height: 12),
           ],
         ),

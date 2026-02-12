@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
-
+import 'bottom_nav_controller.dart'; // import the new bottom nav controller
 
 void main() {
   runApp(const MyApp());
@@ -8,14 +7,11 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
-  
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(), 
-
+      home: const BottomNavController(), // Start here
     );
   }
 }
