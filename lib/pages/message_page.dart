@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/contact.dart';
 import '../services/contact_service.dart';
-import 'chat_detail_page.dart';
 
 class MessagePage extends StatelessWidget {
   const MessagePage({super.key});
@@ -16,7 +15,7 @@ class MessagePage extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
-          'សារជជែក',
+          'Feedback',
           style: TextStyle(fontWeight: FontWeight.bold,
           color: Colors.white),
           
@@ -47,83 +46,104 @@ class MessagePage extends StatelessWidget {
   }
 
   // ================= CHAT TILE =================
-  Widget _chatTile(BuildContext context, Contact contact) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ChatDetailPage(contact: contact),
+  // ================= FEEDBACK TILE =================
+Widget _chatTile(BuildContext context, Contact contact) {
+  return GestureDetector(
+    child: Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 4),
           ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
-        ),
-        child: Row(
-          children: [
-            Stack(
-              children: const [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage:
-                      AssetImage('assets/images/profile/phorn.jpg'),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child:
-                      CircleAvatar(radius: 6, backgroundColor: Colors.green),
-                ),
-              ],
-            ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-            const SizedBox(width: 12),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    contact.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    contact.message,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                ],
+          /// ===== USER INFO =====
+          Row(
+            children: [
+              CircleAvatar(
+              radius: 22,
+              backgroundColor: _avatarColor(contact.name),
+              child: Text(
+                contact.name[0].toUpperCase(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: const [
-                Text('18:26',
-                    style: TextStyle(fontSize: 12, color: Colors.grey)),
-                SizedBox(height: 6),
-                CircleAvatar(
-                  radius: 9,
-                  backgroundColor: Colors.purple,
-                  child: Text(
-                    '1',
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: Text(
+                  contact.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-              ],
+              ),
+
+              const Text(
+                '18:26',
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          /// ===== FEEDBACK MESSAGE =====
+          Text(
+            contact.message,
+            style: const TextStyle(
+              color: Colors.black87,
+              height: 1.4,
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 12),
+
+          /// ===== RATING (UI ONLY) =====
+          Row(
+            children: List.generate(
+              5,
+              (index) => const Icon(
+                Icons.star,
+                size: 18,
+                color: Colors.amber,
+              ),
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+Color _avatarColor(String name) {
+  final colors = [
+    Colors.purple,
+    Colors.blue,
+    Colors.orange,
+    Colors.green,
+    Colors.red,
+    Colors.teal,
+  ];
+
+  return colors[name.hashCode % colors.length];
+}
+
 
 }

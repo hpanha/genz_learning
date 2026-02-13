@@ -120,6 +120,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                 ? null
                 : AppBar(
                     backgroundColor: Colors.purple,
+                    foregroundColor: Colors.white,
                     title: Text(
                       currentVideo.title,
                       maxLines: 2,

@@ -17,7 +17,8 @@ class PlaylistDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple,
+      backgroundColor: Colors.purple,
+      foregroundColor: Colors.white,
         title: Text(title),
       ),
       body: ListView.builder(
